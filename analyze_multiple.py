@@ -396,12 +396,12 @@ def max_phase(s):
 
 def metadata(h5_name,code):
     ################### RX_STATION #################
-    #rx = glob.glob("/home/igp-114/0.0.1_SOY_*") #Para RX
-    #rx=rx[0][24:]
+    rx = glob.glob("/home/igp-114/Pictures/GRAPHICS_SCHAIN_*") #Para RX #Para RX
+    rx=rx[0][39:]
 
     ################### BACKUP_STATION #############
-    rx=glob.glob("/home/igp-114/0000-*") # Para backup
-    rx=rx[0][5:] #Para backup
+    #rx=glob.glob("/home/igp-114/0000-*") # Para backup
+    #rx=rx[0][5:] #Para backup
     #rx=rx[0][24:]
 
     ### CALCULO DE RETARDO ###
