@@ -128,7 +128,7 @@ def analyze_all2(dirn,
 
     if i1 == None:
         i1 = math.floor(gdf_0[0]['max_n']/an_len)-1
-        print i1
+        print "i1",i1
     
     N = i1
 
@@ -138,7 +138,7 @@ def analyze_all2(dirn,
     if i0 == 0:
         if not reanalyze:
             try:
-                i0 = numpy.max(stuffr.load_object("%s/cspec/index.bin"%("%s/%s"%(dirn,ch0[0]))))
+                i0 = numpy.max(stuffr.load_object("%s/cspec/index.bin"%("%s/%s"%(dirn,ch0[0])))+1,0)
             except:
                 print "No index file."
     #INTEGRACIONES_INCOHERENTES
@@ -184,7 +184,7 @@ def analyze_all2(dirn,
         print "%d/%d"%(i,N-1)
         print "i","VALOR DE i: ......",i
         sttime = time.time()
-        print g0_c0_list[10*int(i)*int((an_len/1000000))],""
+        print "gdf",g0_c0_list[10*int(i)*int((an_len/1000000))],""
         temp_a = g0_c0_list[10*int(i)*int((an_len/1000000))]
         mark = int((temp_a.split('/')[-1]).split('.')[-2][-12:])
         print "mark: %d"%(mark)
@@ -217,6 +217,7 @@ def analyze_all2(dirn,
 
                     os.system("rm -f %s/%s/spec-%012d.hdf5"%(proc_folder, freq.procdata_folder.replace('sp01_','sp%s1_'%(code[1])),mark))
                     h5_name = "%s/%s/spec-%012d.hdf5"%(proc_folder, freq.procdata_folder.replace('sp01_','sp%s1_'%(code[1])),mark)
+                    print "HDF5- NOMBRE:",h5_name
                     res = h5py.File(h5_name)
                     res['pw0_C%s'%(code[1])] = dic["s0_C%s"%(code[1])]/inc_int # power spectra density ch0
                     res['pw1_C%s'%(code[1])] = dic["s1_C%s"%(code[1])]/inc_int # power spectra density ch1
@@ -396,7 +397,7 @@ def max_phase(s):
 
 def metadata(h5_name,code):
     ################### RX_STATION #################
-    rx = glob.glob("/home/igp-114/Pictures/GRAPHICS_SCHAIN_*") #Para RX #Para RX
+    rx = glob.glob("/home/igp-114/Pictures/GRAPHICS_SCHAIN_*") #Para RX
     rx=rx[0][39:]
 
     ################### BACKUP_STATION #############
