@@ -443,13 +443,37 @@ class beacon_receiver:
 	    dirns=[]
 	    dirns = dirns + glob.glob("%s/d*"%(rawdata_parent_folder))
 	    dirns.sort()
+            print("*")
+	    print "** CHECK RAWDATA: Check files's number per second"
 
-	    for tmp in dirns[:-1]:#antes estaba dirns[-3:]               #Solo analiza el folder 0 y 
-	        number_gdf = glob.glob("%s/%s/*.gdf"%(tmp,0))
-	        if number_gdf < 3:  #Porque solo cuando es menor que 3
-		    dirns.remove(tmp)
-		    shutil.rmtree(tmp)
-
+	    for tmp in dirns:#antes estaba dirns[-3:]               #Solo analiza el folder 0 y 
+	        
+		if os.path.isdir(tmp+"/0"):
+		    print "Analizando cantidad de datos suficientes en: ",tmp
+		    number_gdf = glob.glob("%s/%s/*.gdf"%(tmp,0))
+                    if len(number_gdf) < 61: #Lectura de gdf inicia desde el segundo archivo *.gdf
+		        print "- Eliminando directorio: ",tmp
+		        shutil.rmtree(tmp)
+		    else:
+			folders=["0","1","2","3","4","5","6","7","8","9","10","11"]
+			f_channels = [tmp+"/"+i for i  in folders]
+			print f_channels
+                        
+			for ch in f_channels: 
+			    number_gdf = glob.glob("%s/*.gdf"%(ch))
+			    number_gdf.sort()
+			    #print "*", number_gdf
+                            for gdf in number_gdf[-10:]:
+				#print gdf,""
+			        a = numpy.fromfile(gdf, dtype= numpy.complex64)
+			        #print len(a) 
+                                if len(a) != 100000:
+				    print "  - Eliminando file: ",gdf
+				    os.remove(gdf)
+                else:
+                    continue
+            del dirns
+	    print "*"
 
 
 

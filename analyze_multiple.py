@@ -100,9 +100,13 @@ def analyze_all2(dirn,
     
     for eachsplitcode in splitcodes:
         codeList.append(eachsplitcode)
-
+    
     ruta_0 = "%s/%s"%(dirn,ch0[0])
-    os.system("mkdir -p %s/cspec"%(ruta_0))
+    
+    if inc_int == 0:
+	os.system("mkdir -p %s/cspec_campaign"%(ruta_0))
+    else:
+	os.system("mkdir -p %s/cspec"%(ruta_0))
 
     print "CodeList: ",codeList
 
@@ -111,7 +115,10 @@ def analyze_all2(dirn,
         os.system("mkdir -p %s/%s"%(proc_folder, freq.procdata_folder.replace('sp01_','sp%s1_'%(code[1]))))
     
     if reanalyze:
-        os.system("rm %s/cspec/res*.hdf5"%(ruta_0))
+        if inc_int == 0:
+            os.system("rm %s/cspec_campaign/res*.hdf5"%(ruta_0))
+        else:
+	    os.system("rm %s/cspec/res*.hdf5"%(ruta_0))
 
     print "CH0,len",len(ch0)
     print "ch0", ch0
@@ -127,8 +134,8 @@ def analyze_all2(dirn,
     g0_c0_list = gdf_0[0]['file_list']
 
     if i1 == None:
-        i1 = math.floor(gdf_0[0]['max_n']/an_len)-1
-        print "i1",i1
+        i1 = math.floor(gdf_0[0]['max_n']/an_len)
+        print i1
     
     N = i1
 
@@ -138,7 +145,10 @@ def analyze_all2(dirn,
     if i0 == 0:
         if not reanalyze:
             try:
-                i0 = numpy.max(stuffr.load_object("%s/cspec/index.bin"%("%s/%s"%(dirn,ch0[0])))+1,0)
+                if inc_int == 0:
+                    i0= numpy.max(stuffr.load_object("%s/cspec_campaign/index.bin"%("%s/%s"%(dirn,ch0[0])))+1.0)
+		else:
+                    i0 = numpy.max(stuffr.load_object("%s/cspec/index.bin"%("%s/%s"%(dirn,ch0[0])))+1.0)
             except:
                 print "No index file."
     #INTEGRACIONES_INCOHERENTES
@@ -156,7 +166,7 @@ def analyze_all2(dirn,
     print i0,'test2'
     print N,'test3'
 
-    if i0+1 >= N:
+    if i0 >= N:
         print "Nothing to process yet !!!"
         time.sleep(60)
         return 5
@@ -184,7 +194,7 @@ def analyze_all2(dirn,
         print "%d/%d"%(i,N-1)
         print "i","VALOR DE i: ......",i
         sttime = time.time()
-        print "gdf",g0_c0_list[10*int(i)*int((an_len/1000000))],""
+        print g0_c0_list[10*int(i)*int((an_len/1000000))],""
         temp_a = g0_c0_list[10*int(i)*int((an_len/1000000))]
         mark = int((temp_a.split('/')[-1]).split('.')[-2][-12:])
         print "mark: %d"%(mark)
@@ -217,7 +227,6 @@ def analyze_all2(dirn,
 
                     os.system("rm -f %s/%s/spec-%012d.hdf5"%(proc_folder, freq.procdata_folder.replace('sp01_','sp%s1_'%(code[1])),mark))
                     h5_name = "%s/%s/spec-%012d.hdf5"%(proc_folder, freq.procdata_folder.replace('sp01_','sp%s1_'%(code[1])),mark)
-                    print "HDF5- NOMBRE:",h5_name
                     res = h5py.File(h5_name)
                     res['pw0_C%s'%(code[1])] = dic["s0_C%s"%(code[1])]/inc_int # power spectra density ch0
                     res['pw1_C%s'%(code[1])] = dic["s1_C%s"%(code[1])]/inc_int # power spectra density ch1
@@ -285,7 +294,7 @@ def analyze_all2(dirn,
                 metadata(h5_name_c,code[0])
                     #print '------Saving data for code %s...%d/%d'%(code[1],save_int_data[code[0]],inc_int)
                 if code[0]==(len(codeList)-1): #Just save at the last code
-                    stuffr.save_object(i,"%s/cspec/index.bin"%("%s/%s"%(dirn,ch0[0])))
+                    stuffr.save_object(i,"%s/cspec_campaign/index.bin"%("%s/%s"%(dirn,ch0[0])))
 
         print 'time taked> ', time.time()-sttime
 
@@ -397,11 +406,11 @@ def max_phase(s):
 
 def metadata(h5_name,code):
     ################### RX_STATION #################
-    rx = glob.glob("/home/igp-114/Pictures/GRAPHICS_SCHAIN_*") #Para RX
-    rx=rx[0][39:]
+    #rx = glob.glob("/home/igp-114/0.0.1_SOY_*") #Para RX
+    #rx=rx[0][24:]
 
     ################### BACKUP_STATION #############
-    #rx=glob.glob("/home/igp-114/0000-*") # Para backup
+    rx=glob.glob("/home/igp-114/0.0.1_*") # Para backup
     #rx=rx[0][5:] #Para backup
     #rx=rx[0][24:]
 
